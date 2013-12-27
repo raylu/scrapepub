@@ -44,11 +44,18 @@ def main():
 
 		content = ''
 		for el in div.iterchildren():
-			content += lxml.etree.tostring(el)
+			el_str = lxml.etree.tostring(el)
+			el_str = el_str.replace('<strike>', '<del>')
+			el_str = el_str.replace('</strike>', '</del>')
+			content += el_str
+		h2s = list(div.itertext('h2'))
+		if len(h2s) != 2:
+			raise RuntimeError("expected 2 h2's got %d" % len(h2s))
+		title = h2s[0]
 
 		n = book.addHtml('', '%s.html' % filename, template % (filename, content))
 		book.addSpineItem(n)
-		book.addTocMapNode(n.destPath, filename)
+		book.addTocMapNode(n.destPath, title)
 
 	output_name = 'tomu_vol1'
 	shutil.rmtree(output_name, ignore_errors=True)
