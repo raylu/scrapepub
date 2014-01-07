@@ -3,24 +3,31 @@
 import requests
 
 import re
+import sys
 
-start = 'http://www.talesofmu.com/book01/1' # 208.97.181.144
+meta = { # 208.97.181.144
+	'vol1': ('http://www.talesofmu.com/book01/1', 496.1),
+	'vol2': ('http://www.talesofmu.com/volume-2/chapter-1', 195),
+}
+start, end = meta[sys.argv[1]] # 208.97.181.144
 re_next = re.compile('<a href="(.*)" rel="next">')
 
 rs = requests.Session()
 url = start
 while True:
-	split = url.split('/')
+	filename_str = url.split('/')[-1]
+	if filename_str.startswith('chapter-'):
+		filename_str = filename_str[8:]
 	try:
-		filename = int(split[-1])
+		filename = int(filename_str)
 	except ValueError:
 		filename += 0.1
-		if filename > 496.1:
-			break
 	print 'getting', filename
 	html = rs.get(url).text
-	with open('html/%s' % filename, 'w') as f:
+	with open('%s_raw/%s' % (sys.argv[1], filename), 'w') as f:
 		f.write(html.encode('utf-8'))
 
+	if filename == end:
+		break
 	match = re_next.search(html)
 	url = match.group(1)

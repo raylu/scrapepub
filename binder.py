@@ -6,10 +6,15 @@ import lxml.html
 
 import os
 import shutil
+import sys
 
-def main():
+def main(vol):
+	titles = {
+		'vol1': 'Tales of MU - Volume 1',
+		'vol2': 'Tales of MU - Volume 2',
+	}
 	book = epub.EpubBook()
-	book.setTitle('Tales of MU - Volume 1')
+	book.setTitle(titles[vol])
 	book.addCreator('Alexandra Erin')
 	book.addTitlePage()
 	book.addTocPage()
@@ -23,7 +28,7 @@ def main():
 	'''
 
 	files = []
-	for filename in os.listdir('html'):
+	for filename in os.listdir(vol + '_raw'):
 		if '.' in filename:
 			files.append(float(filename))
 		else:
@@ -32,7 +37,7 @@ def main():
 
 	for filename in files:
 		print 'binding', filename
-		with open('html/%s' % filename, 'r') as f:
+		with open('%s_raw/%s' % (vol, filename), 'r') as f:
 			html = f.read()
 		html = html.replace('\r', '')
 		dom = lxml.html.document_fromstring(html)
@@ -57,10 +62,10 @@ def main():
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'tomu_vol1'
+	output_name = 'tomu_' + vol
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
 
 if __name__ == '__main__':
-	main()
+	main(*sys.argv[1:])
