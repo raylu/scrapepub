@@ -27,13 +27,8 @@ def main(vol):
 	</html>
 	'''
 
-	files = []
-	for filename in os.listdir(vol + '_raw'):
-		if '.' in filename:
-			files.append(float(filename))
-		else:
-			files.append(int(filename))
-	files.sort()
+	files = os.listdir(vol + '_raw')
+	files.sort(key=lambda f: map(int, f.split('.')))
 
 	for filename in files:
 		print 'binding', filename

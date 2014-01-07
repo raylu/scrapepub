@@ -21,7 +21,13 @@ while True:
 	try:
 		filename = int(filename_str)
 	except ValueError:
-		filename += 0.1
+		split = str(filename).split('.')
+		ipart = split[0]
+		try:
+			fpart = int(split[1])
+		except IndexError:
+			fpart = 0
+		filename = '%s.%d' % (ipart, fpart + 1)
 	print 'getting', filename
 	html = rs.get(url).text
 	with open('%s_raw/%s' % (sys.argv[1], filename), 'w') as f:
