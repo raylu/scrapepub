@@ -6,16 +6,11 @@ import lxml.html
 
 import os
 import shutil
-import sys
 
-def main(vol):
-	titles = {
-		'vol1': 'Tales of MU - Volume 1',
-		'vol2': 'Tales of MU - Volume 2',
-	}
+def main():
 	book = epub.EpubBook()
-	book.setTitle(titles[vol])
-	book.addCreator('Alexandra Erin')
+	book.setTitle('Ra')
+	book.addCreator('qntm - Ed MacPherson')
 	book.addTitlePage()
 	book.addTocPage()
 
@@ -27,20 +22,26 @@ def main(vol):
 	</html>
 	'''
 
-	files = os.listdir(vol + '_raw')
-	files.sort(key=lambda f: map(int, f.split('.')))
+	files = os.listdir('raw')
+	files.sort(key=int)
 
 	for filename in files:
 		print 'binding', filename
-		with open('%s_raw/%s' % (vol, filename), 'r') as f:
+		with open('raw/' + filename, 'r') as f:
 			html = f.read()
 		html = html.replace('\r', '')
 		dom = lxml.html.document_fromstring(html)
+
+		h2s = list(dom.iterdescendants('h2'))
+		if len(h2s) != 1:
+			raise RuntimeError('expected 1 h2')
+		title = h2s[0].text
+
 		for div in dom.iterdescendants('div'):
-			if div.get('class') == 'post':
+			if div.get('id') == 'content':
 				break
 		else:
-			raise RuntimeError('could not find div with class="post"')
+			raise RuntimeError('could not find id="content"')
 
 		content = ''
 		for el in div.iterchildren():
@@ -48,17 +49,15 @@ def main(vol):
 			el_str = el_str.replace('<strike>', '<del>')
 			el_str = el_str.replace('</strike>', '</del>')
 			content += el_str
-		h2s = list(div.itertext('h2'))
-		title = h2s[0]
 
-		n = book.addHtml('', '%s.html' % filename, template % (filename, content))
+		n = book.addHtml('', '%s.html' % filename, template % (title, content))
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'tomu_' + vol
+	output_name = 'ra'
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
 
 if __name__ == '__main__':
-	main(*sys.argv[1:])
+	main()
