@@ -232,10 +232,10 @@ class EpubBook:
 
     def __writeTocNCX(self):
         self.tocMapRoot.assignPlayOrder()
-        fout = open(os.path.join(self.rootDir, 'OEBPS', 'toc.ncx'), 'w')
+        fout = open(os.path.join(self.rootDir, 'OEBPS', 'toc.ncx'), 'wb')
         tmpl = self.loader.load('toc.ncx')
         stream = tmpl.generate(book = self)
-        fout.write(stream.render('xml'))
+        fout.write(stream.render('xml').encode('utf-8'))
         fout.close()
     
     def __writeContentOPF(self):
@@ -249,8 +249,11 @@ class EpubBook:
         for item in self.getAllItems():
             print item.id, item.destPath
             if item.html:
-                fout = open(os.path.join(self.rootDir, 'OEBPS', item.destPath), 'w')
-                fout.write(item.html)
+                fout = open(os.path.join(self.rootDir, 'OEBPS', item.destPath), 'wb')
+                html = item.html
+                if isinstance(html, unicode):
+                    html = html.encode('utf-8')
+                fout.write(html)
                 fout.close()
             else:
                 shutil.copyfile(item.srcPath, os.path.join(self.rootDir, 'OEBPS', item.destPath))
