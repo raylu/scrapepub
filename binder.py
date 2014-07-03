@@ -49,8 +49,6 @@ def main(vol):
 			el_str = el_str.replace('</strike>', '</del>')
 			content += el_str
 		h2s = list(div.itertext('h2'))
-		if len(h2s) != 2:
-			raise RuntimeError("expected 2 h2's got %d" % len(h2s))
 		title = h2s[0]
 
 		n = book.addHtml('', '%s.html' % filename, template % (filename, content))
