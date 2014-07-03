@@ -1,39 +1,17 @@
 #!/usr/bin/env python
 
 import requests
-
-import re
-import sys
-
-meta = { # 208.97.181.144
-	'vol1': ('http://www.talesofmu.com/book01/1', 496.1),
-	'vol2': ('http://www.talesofmu.com/volume-2/chapter-1', 195),
-}
-start, end = meta[sys.argv[1]] # 208.97.181.144
-re_next = re.compile('<a href="(.*)" rel="next">')
+from xml.etree import ElementTree
 
 rs = requests.Session()
-url = start
-while True:
-	filename_str = url.split('/')[-1]
-	if filename_str.startswith('chapter-'):
-		filename_str = filename_str[8:]
-	try:
-		filename = int(filename_str)
-	except ValueError:
-		split = str(filename).split('.')
-		ipart = split[0]
-		try:
-			fpart = int(split[1])
-		except IndexError:
-			fpart = 0
-		filename = '%s.%d' % (ipart, fpart + 1)
-	print 'getting', filename
-	html = rs.get(url).text
-	with open('%s_raw/%s' % (sys.argv[1], filename), 'w') as f:
-		f.write(html.encode('utf-8'))
+xml = rs.get('http://qntm.org/rss.php?ra').content
+rss = ElementTree.fromstring(xml)
+urls = []
+for item in rss.iter('item'):
+	urls.append(item.find('link').text)
 
-	if filename == end:
-		break
-	match = re_next.search(html)
-	url = match.group(1)
+for i, url in enumerate(reversed(urls)):
+	print 'getting', i, url
+	html = rs.get(url).content
+	with open('raw/%d' % i, 'w') as f:
+		f.write(html)
