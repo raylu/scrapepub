@@ -10,7 +10,7 @@ import shutil
 def main():
 	book = epub.EpubBook()
 	book.setTitle('Ra')
-	book.addCreator('qntm - Ed MacPherson')
+	book.addCreator('Sam Hughes')
 	book.addTitlePage()
 	book.addTocPage()
 
