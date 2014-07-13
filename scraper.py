@@ -1,16 +1,26 @@
 #!/usr/bin/env python
 
+import re
+
 import requests
-from xml.etree import ElementTree
 
 rs = requests.Session()
-xml = rs.get('http://qntm.org/rss.php?ra').content
-rss = ElementTree.fromstring(xml)
-urls = []
-for item in rss.iter('item'):
-	urls.append(item.find('link').text)
+html = rs.get('http://parahumans.wordpress.com/table-of-contents/').content
 
-for i, url in enumerate(reversed(urls)):
+split = html.split('\n')
+urls = []
+started = False
+for line in split:
+	if started:
+		if 'id="jp-post-flair"' in line:
+			break
+		match = re.search('href="(.*?)"', line)
+		if match:
+			urls.append(match.group(1))
+	elif 'class="entry-content"' in line:
+		started = True
+
+for i, url in enumerate(urls):
 	print 'getting', i, url
 	html = rs.get(url).content
 	with open('raw/%d' % i, 'w') as f:
