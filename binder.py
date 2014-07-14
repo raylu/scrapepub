@@ -9,8 +9,8 @@ import shutil
 
 def main():
 	book = epub.EpubBook()
-	book.setTitle('Ra')
-	book.addCreator('qntm - Ed MacPherson')
+	book.setTitle('Worm')
+	book.addCreator('Wildbow - J.McCrae')
 	book.addTitlePage()
 	book.addTocPage()
 
@@ -32,16 +32,16 @@ def main():
 		html = html.replace('\r', '')
 		dom = lxml.html.document_fromstring(html)
 
-		h2s = list(dom.iterdescendants('h2'))
-		if len(h2s) != 1:
-			raise RuntimeError('expected 1 h2')
-		title = h2s[0].text
+		h1s = list(dom.iterdescendants('h1'))
+		if len(h1s) < 2:
+			raise RuntimeError('expected at least 2 h1')
+		title = h1s[-1].text
 
 		for div in dom.iterdescendants('div'):
-			if div.get('id') == 'content':
+			if div.get('class') == 'entry-content':
 				break
 		else:
-			raise RuntimeError('could not find id="content"')
+			raise RuntimeError('could not find class="entry-content"')
 
 		content = ''
 		for el in div.iterchildren():
@@ -54,7 +54,7 @@ def main():
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'ra'
+	output_name = 'worm'
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
