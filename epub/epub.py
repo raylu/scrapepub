@@ -235,7 +235,10 @@ class EpubBook:
         fout = open(os.path.join(self.rootDir, 'OEBPS', 'toc.ncx'), 'wb')
         tmpl = self.loader.load('toc.ncx')
         stream = tmpl.generate(book = self)
-        fout.write(stream.render('xml').encode('utf-8'))
+        rendered = stream.render('xml')
+        if isinstance(rendered, unicode):
+            rendered = rendered.encode('utf-8')
+        fout.write(rendered)
         fout.close()
     
     def __writeContentOPF(self):
