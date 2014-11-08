@@ -2,12 +2,13 @@
 
 import requests
 
+import os
 import re
 import sys
 
 meta = { # 208.97.181.144
 	'vol1': ('http://www.talesofmu.com/book01/1', 496.1),
-	'vol2': ('http://www.talesofmu.com/volume-2/chapter-1', 195),
+	'vol2': ('http://www.talesofmu.com/volume-2/chapter-1', 253),
 }
 start, end = meta[sys.argv[1]] # 208.97.181.144
 re_next = re.compile('<a href="(.*)" rel="next">')
@@ -28,10 +29,16 @@ while True:
 		except IndexError:
 			fpart = 0
 		filename = '%s.%d' % (ipart, fpart + 1)
-	print 'getting', filename
-	html = rs.get(url).text
-	with open('%s_raw/%s' % (sys.argv[1], filename), 'w') as f:
-		f.write(html.encode('utf-8'))
+	path = '%s_raw/%s' % (sys.argv[1], filename)
+	if os.path.exists(path):
+		print 'skipping', filename
+		with open(path, 'r') as f:
+			html = f.read()
+	else:
+		print 'getting', filename
+		html = rs.get(url).text
+		with open(path, 'w') as f:
+			f.write(html.encode('utf-8'))
 
 	if filename == end:
 		break
