@@ -5,7 +5,7 @@ import re
 import requests
 
 rs = requests.Session()
-html = rs.get('http://parahumans.wordpress.com/table-of-contents/').content
+html = rs.get('https://pactwebserial.wordpress.com/table-of-contents/').content
 
 split = html.split('\n')
 urls = []

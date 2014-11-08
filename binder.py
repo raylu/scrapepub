@@ -9,7 +9,7 @@ import shutil
 
 def main():
 	book = epub.EpubBook()
-	book.setTitle('Worm')
+	book.setTitle('Pact')
 	book.addCreator('Wildbow - J.McCrae')
 	book.addTitlePage()
 	book.addTocPage()
@@ -54,7 +54,7 @@ def main():
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'worm'
+	output_name = 'pact'
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
