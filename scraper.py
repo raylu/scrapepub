@@ -1,27 +1,33 @@
 #!/usr/bin/env python
 
-import re
-
 import requests
 
+import os
+import re
+import sys
+
+start = 'https://twigserial.wordpress.com/2014/12/24/taken-roots-1-1/'
+end = 'https://twigserial.wordpress.com/2015/08/25/esprit-de-corpse-5-12/'
+re_next = re.compile("<link rel='next' title='.*' href='(.*)' />")
+
 rs = requests.Session()
-html = rs.get('http://parahumans.wordpress.com/table-of-contents/').content
+url = start
+i = 1
+while True:
+	filename = url.rsplit('/', 2)[-2]
+	path = 'twig_raw/%d.%s' % (i, filename)
+	if os.path.exists(path):
+		print 'skipping', filename
+		with open(path, 'r') as f:
+			html = f.read()
+	else:
+		print 'getting', filename
+		html = rs.get(url).text
+		with open(path, 'w') as f:
+			f.write(html.encode('utf-8'))
 
-split = html.split('\n')
-urls = []
-started = False
-for line in split:
-	if started:
-		if 'id="jp-post-flair"' in line:
-			break
-		match = re.search('href="(.*?)"', line)
-		if match:
-			urls.append(match.group(1))
-	elif 'class="entry-content"' in line:
-		started = True
-
-for i, url in enumerate(urls):
-	print 'getting', i, url
-	html = rs.get(url).content
-	with open('raw/%d' % i, 'w') as f:
-		f.write(html)
+	if url == end:
+		break
+	match = re_next.search(html)
+	url = match.group(1)
+	i += 1

@@ -9,8 +9,8 @@ import shutil
 
 def main():
 	book = epub.EpubBook()
-	book.setTitle('Worm')
-	book.addCreator('Wildbow - J.McCrae')
+	book.setTitle('Twig')
+	book.addCreator('Wildbow - J.C. McCrae')
 	book.addTitlePage()
 	book.addTocPage()
 
@@ -22,20 +22,22 @@ def main():
 	</html>
 	'''
 
-	files = os.listdir('raw')
-	files.sort(key=int)
+	files = os.listdir('twig_raw')
+	files.sort(key=lambda f: int(f.split('.', 1)[0]))
 
 	for filename in files:
 		print 'binding', filename
-		with open('raw/' + filename, 'r') as f:
+		with open('twig_raw/' + filename, 'r') as f:
 			html = f.read()
 		html = html.replace('\r', '')
 		dom = lxml.html.document_fromstring(html)
 
-		h1s = list(dom.iterdescendants('h1'))
-		if len(h1s) < 2:
-			raise RuntimeError('expected at least 2 h1')
-		title = h1s[-1].text
+		for meta in dom.iterdescendants('meta'):
+			if meta.get('property') == 'og:title':
+				title = meta.get('content')
+				break
+		else:
+			raise RuntimeError('could not find title')
 
 		for div in dom.iterdescendants('div'):
 			if div.get('class') == 'entry-content':
@@ -54,7 +56,7 @@ def main():
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'worm'
+	output_name = 'twig'
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
