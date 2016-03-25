@@ -1,17 +1,22 @@
 #!/usr/bin/env python
 
 import requests
-from xml.etree import ElementTree
+from bs4 import BeautifulSoup
+
+start = 'https://practicalguidetoevil.wordpress.com/2015/03/25/prologue/'
+end = 'https://practicalguidetoevil.wordpress.com/2015/11/04/prologue-2/'
 
 rs = requests.Session()
-xml = rs.get('http://qntm.org/rss.php?ra').content
-rss = ElementTree.fromstring(xml)
-urls = []
-for item in rss.iter('item'):
-	urls.append(item.find('link').text)
-
-for i, url in enumerate(reversed(urls)):
-	print 'getting', i, url
-	html = rs.get(url).content
-	with open('raw/%d' % i, 'w') as f:
-		f.write(html)
+url = start
+i = 0
+while url != end:
+	name = url.rsplit('/', 2)[1]
+	filename = '%02d-%s' % (i, name)
+	print 'getting', filename
+	content = rs.get(url).content
+	with open('raw/' + filename, 'w') as f:
+		f.write(content)
+	soup = BeautifulSoup(content, 'lxml')
+	next_el = soup.find('link', rel='next')
+	url = next_el['href']
+	i += 1
