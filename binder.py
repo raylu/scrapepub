@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 
+from bs4 import BeautifulSoup
 from epub import epub
-import lxml.etree
-import lxml.html
 
 import os
 import shutil
 
 def main():
 	book = epub.EpubBook()
-	book.setTitle('Ra')
-	book.addCreator('Sam Hughes')
+	book.setTitle('A Practical Guide to Evil')
+	book.addCreator('erraticerrata')
 	book.addTitlePage()
 	book.addTocPage()
 
@@ -23,38 +22,22 @@ def main():
 	'''
 
 	files = os.listdir('raw')
-	files.sort(key=int)
+	files.sort()
 
 	for filename in files:
 		print 'binding', filename
 		with open('raw/' + filename, 'r') as f:
-			html = f.read()
-		html = html.replace('\r', '')
-		dom = lxml.html.document_fromstring(html)
-
-		h2s = list(dom.iterdescendants('h2'))
-		if len(h2s) != 1:
-			raise RuntimeError('expected 1 h2')
-		title = h2s[0].text
-
-		for div in dom.iterdescendants('div'):
-			if div.get('id') == 'content':
-				break
-		else:
-			raise RuntimeError('could not find id="content"')
-
-		content = ''
-		for el in div.iterchildren():
-			el_str = lxml.etree.tostring(el)
-			el_str = el_str.replace('<strike>', '<del>')
-			el_str = el_str.replace('</strike>', '</del>')
-			content += el_str
+			soup = BeautifulSoup(f, 'lxml')
+		title = soup.find(class_='entry-title').string
+		content = soup.find(class_='entry-content')
+		content.find(class_='wpcnt').decompose()
+		content.find(id='jp-post-flair').decompose()
 
 		n = book.addHtml('', '%s.html' % filename, template % (title, content))
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'ra'
+	output_name = 'pgte'
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
