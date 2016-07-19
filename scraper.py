@@ -8,7 +8,7 @@ import sys
 
 meta = { # 208.97.181.144
 	'vol1': ('http://www.talesofmu.com/book01/1', 496.1),
-	'vol2': ('http://www.talesofmu.com/volume-2/chapter-1', 300),
+	'vol2': ('http://www.talesofmu.com/volume-2/chapter-1', 324),
 }
 start, end = meta[sys.argv[1]] # 208.97.181.144
 re_next = re.compile('<a href="(.*)" rel="next">')
