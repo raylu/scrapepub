@@ -9,8 +9,8 @@ from epub import epub
 
 def main(bookname):
 	titles = {
-		'book1': 'Book I',
-		'book2': 'Book II',
+		'book1': 'Book One - What Fresh Hell',
+		'book2': 'Book Two - Spacious Skies, Amber Waves',
 	}
 	book = epub.EpubBook()
 	book.setTitle('A Practical Guide to Evil - ' + titles[bookname])
@@ -29,7 +29,7 @@ def main(bookname):
 	</html>
 	'''
 
-	dirname = 'pgte_%s_raw/' % bookname
+	dirname = 'gab_%s_raw/' % bookname
 	files = os.listdir(dirname)
 	files.sort()
 
@@ -42,11 +42,25 @@ def main(bookname):
 		content.find(class_='wpcnt').decompose()
 		content.find(id='jp-post-flair').decompose()
 
+		# remove prev/next chapter links
+		p_removed = 0
+		for p in content.children:
+			if p.name != 'p':
+				continue
+			has_chapter_links = has_nontext = False
+			for c in p.children:
+				if c.name == 'a' and c.string in ('< Previous Chapter', 'Next Chapter >'):
+					p.decompose()
+					p_removed += 1
+					break
+		if p_removed not in (1, 2):
+			raise Exception('removed %d' % p_removed)
+
 		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'pgte_' + bookname
+	output_name = 'gab_' + bookname
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
