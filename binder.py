@@ -1,14 +1,19 @@
 #!/usr/bin/env python
 
+import os
+import shutil
+import sys
+
 from bs4 import BeautifulSoup
 from epub import epub
 
-import os
-import shutil
-
-def main():
+def main(bookname):
+	titles = {
+		'book1': 'Book I',
+		'book2': 'Book II',
+	}
 	book = epub.EpubBook()
-	book.setTitle('A Practical Guide to Evil')
+	book.setTitle('A Practical Guide to Evil - ' + titles[bookname])
 	book.addCreator('erraticerrata')
 	book.addTitlePage()
 	book.addTocPage()
@@ -21,12 +26,13 @@ def main():
 	</html>
 	'''
 
-	files = os.listdir('raw')
+	dirname = 'pgte_%s_raw/' % bookname
+	files = os.listdir(dirname)
 	files.sort()
 
 	for filename in files:
 		print 'binding', filename
-		with open('raw/' + filename, 'r') as f:
+		with open(dirname + filename, 'r') as f:
 			soup = BeautifulSoup(f, 'lxml')
 		title = soup.find(class_='entry-title').string
 		content = soup.find(class_='entry-content')
@@ -37,10 +43,10 @@ def main():
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'pgte'
+	output_name = 'pgte_' + bookname
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
 
 if __name__ == '__main__':
-	main()
+	main(*sys.argv[1:])
