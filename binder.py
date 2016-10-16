@@ -7,7 +7,7 @@ import sys
 from bs4 import BeautifulSoup
 from epub import epub
 
-def main(bookname):
+def main(vol):
 	titles = {
 		'vol1': 'Volume 1',
 		'vol2': 'Volume 2',
@@ -15,7 +15,7 @@ def main(bookname):
 		'vol4': 'Volume 4',
 	}
 	book = epub.EpubBook()
-	book.setTitle('The Gods are Bastards - ' + titles[bookname])
+	book.setTitle('The Gods are Bastards - ' + titles[vol])
 	book.addCreator('D. D. Webb')
 	book.addTitlePage()
 	book.addTocPage()
@@ -31,8 +31,10 @@ def main(bookname):
 	</html>
 	'''
 
-	dirname = 'gab_%s_raw/' % bookname
+	dirname = 'gab_%s_raw/' % vol
 	files = os.listdir(dirname)
+	if vol == 'vol2':
+		files.remove('16-interruption')
 	files.sort()
 
 	chapter_link_text = ['< Previous Chapter', 'Next Chapter >']
@@ -65,7 +67,7 @@ def main(bookname):
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'gab_' + bookname
+	output_name = 'gab_' + vol
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
