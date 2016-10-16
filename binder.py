@@ -9,12 +9,14 @@ from epub import epub
 
 def main(bookname):
 	titles = {
-		'book1': 'Book One - What Fresh Hell',
-		'book2': 'Book Two - Spacious Skies, Amber Waves',
+		'vol1': 'Volume 1',
+		'vol2': 'Volume 2',
+		'vol3': 'Volume 3',
+		'vol4': 'Volume 4',
 	}
 	book = epub.EpubBook()
-	book.setTitle('A Practical Guide to Evil - ' + titles[bookname])
-	book.addCreator('erraticerrata')
+	book.setTitle('The Gods are Bastards - ' + titles[bookname])
+	book.addCreator('D. D. Webb')
 	book.addTitlePage()
 	book.addTocPage()
 
@@ -33,6 +35,8 @@ def main(bookname):
 	files = os.listdir(dirname)
 	files.sort()
 
+	chapter_link_text = ['< Previous Chapter', 'Next Chapter >']
+
 	for filename in files:
 		print 'binding', filename
 		with open(dirname + filename, 'r') as f:
@@ -49,7 +53,8 @@ def main(bookname):
 				continue
 			has_chapter_links = has_nontext = False
 			for c in p.children:
-				if c.name == 'a' and c.string in ('< Previous Chapter', 'Next Chapter >'):
+				if (c.name == 'a' and c.string in chapter_link_text) or (c.name == 'strong' and \
+						any(cc.name == 'a' and cc.string in chapter_link_text for cc in c.children)):
 					p.decompose()
 					p_removed += 1
 					break

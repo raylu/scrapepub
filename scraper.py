@@ -8,19 +8,27 @@ import sys
 import requests
 from bs4 import BeautifulSoup
 
-book = sys.argv[1]
+vol = sys.argv[1]
 bounds = {
-	'book1': (
+	'vol1': (
 		'https://tiraas.wordpress.com/2014/08/20/book-1-prologue/',
-		'https://tiraas.wordpress.com/2014/10/08/1-21/'
+		'https://tiraas.wordpress.com/2015/02/13/epilogue-vol-1/'
 	),
-	'book2': (
-		'https://tiraas.wordpress.com/2014/10/10/2-1/',
-		'https://tiraas.wordpress.com/2014/11/28/2-22/',
+	'vol2': (
+		'https://tiraas.wordpress.com/2015/02/24/volume-2-prologue/',
+		'https://tiraas.wordpress.com/2015/08/28/epilogue-volume-2/'
+	),
+	'vol3': (
+		'https://tiraas.wordpress.com/2015/09/14/prologue-volume-3/',
+		'https://tiraas.wordpress.com/2016/07/15/epilogue-volume-3/'
+	),
+	'vol4': (
+		'https://tiraas.wordpress.com/2016/07/29/prologue-volume-4/',
+		None
 	),
 }
-start, end = bounds[book]
-dirname = 'gab_%s_raw/' % book
+start, end = bounds[vol]
+dirname = 'gab_%s_raw/' % vol
 try:
 	os.mkdir(dirname)
 except OSError as e:
@@ -47,7 +55,9 @@ while True:
 	soup = BeautifulSoup(content, 'lxml')
 	next_el = soup.find('link', rel='next')
 	if next_el is None:
-		url = None
+		if end is None:
+			break
+		raise Exception('could not find next')
 	else:
 		url = next_el['href']
 	i += 1
