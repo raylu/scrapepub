@@ -22,7 +22,10 @@ def main(bookname):
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 	<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
 	<head><title>%s</title></head>
-	<body><p>%s</p></body>
+	<body>
+		<h2>%s</h2>
+		<p>%s</p>
+	</body>
 	</html>
 	'''
 
@@ -39,7 +42,7 @@ def main(bookname):
 		content.find(class_='wpcnt').decompose()
 		content.find(id='jp-post-flair').decompose()
 
-		n = book.addHtml('', '%s.html' % filename, template % (title, content))
+		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
