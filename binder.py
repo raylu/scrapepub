@@ -27,12 +27,12 @@ def main(vol):
 	</html>
 	'''
 
-	files = os.listdir(vol + '_raw')
+	files = os.listdir('tomu_%s_raw' % vol)
 	files.sort(key=lambda f: map(int, f.split('.')))
 
 	for filename in files:
 		print 'binding', filename
-		with open('%s_raw/%s' % (vol, filename), 'r') as f:
+		with open('tomu_%s_raw/%s' % (vol, filename), 'r') as f:
 			html = f.read()
 		html = html.replace('\r', '')
 		dom = lxml.html.document_fromstring(html)

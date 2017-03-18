@@ -8,7 +8,7 @@ import sys
 
 meta = { # 208.97.181.144
 	'vol1': ('http://www.talesofmu.com/book01/1', 496.1),
-	'vol2': ('http://www.talesofmu.com/volume-2/chapter-1', 336),
+	'vol2': ('http://www.talesofmu.com/volume-2/chapter-1', 338),
 }
 start, end = meta[sys.argv[1]] # 208.97.181.144
 re_next = re.compile('<a href="(.*)" rel="next">')
@@ -29,7 +29,7 @@ while True:
 		except IndexError:
 			fpart = 0
 		filename = '%s.%d' % (ipart, fpart + 1)
-	path = '%s_raw/%s' % (sys.argv[1], filename)
+	path = 'tomu_%s_raw/%s' % (sys.argv[1], filename)
 	if os.path.exists(path):
 		print 'skipping', filename
 		with open(path, 'r') as f:
