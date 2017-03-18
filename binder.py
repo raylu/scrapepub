@@ -10,7 +10,8 @@ from epub import epub
 def main(bookname):
 	titles = {
 		'book1': 'Book I',
-		'book2': 'Book II',
+		'book2': 'Book 2',
+		'book3': 'Book 3',
 	}
 	book = epub.EpubBook()
 	book.setTitle('A Practical Guide to Evil - ' + titles[bookname])

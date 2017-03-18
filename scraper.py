@@ -12,11 +12,15 @@ book = sys.argv[1]
 bounds = {
 	'book1': (
 		'https://practicalguidetoevil.wordpress.com/2015/03/25/prologue/',
-		'https://practicalguidetoevil.wordpress.com/2015/11/04/prologue-2/'
+		'https://practicalguidetoevil.wordpress.com/2015/11/04/prologue-2/',
 	),
 	'book2': (
 		'https://practicalguidetoevil.wordpress.com/2015/11/04/prologue-2/',
 		'https://practicalguidetoevil.wordpress.com/2017/02/08/prologue-3/',
+	),
+	'book3': (
+		'https://practicalguidetoevil.wordpress.com/2017/02/08/prologue-3/',
+		None,
 	),
 }
 start, end = bounds[book]
