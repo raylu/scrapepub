@@ -58,6 +58,7 @@ while True:
 		if end is None:
 			break
 		raise Exception('could not find next')
-	else:
-		url = next_el['href']
+	url = next_el['href']
+	if url == 'https://tiraas.wordpress.com/2017/03/24/12-37b/': # skip placeholder chapter
+		url = 'https://tiraas.wordpress.com/2017/03/29/12-38/'
 	i += 1

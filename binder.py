@@ -48,18 +48,19 @@ def main(vol):
 		content.find(class_='wpcnt').decompose()
 		content.find(id='jp-post-flair').decompose()
 
-		# remove prev/next chapter links
+		# remove prev/next chapter links and random ad stylesheet
 		p_removed = 0
-		for p in content.children:
-			if p.name != 'p':
-				continue
-			has_chapter_links = has_nontext = False
-			for c in p.children:
-				if (c.name == 'a' and c.string in chapter_link_text) or (c.name == 'strong' and \
-						any(cc.name == 'a' and cc.string in chapter_link_text for cc in c.children)):
-					p.decompose()
-					p_removed += 1
-					break
+		for el in content.children:
+			if el.name == 'style':
+				el.decompose()
+			elif el.name == 'p':
+				has_chapter_links = has_nontext = False
+				for c in el.children:
+					if (c.name == 'a' and c.string in chapter_link_text) or (c.name == 'strong' and \
+							any(cc.name == 'a' and cc.string in chapter_link_text for cc in c.children)):
+						el.decompose()
+						p_removed += 1
+						break
 		if p_removed not in (1, 2):
 			raise Exception('removed %d' % p_removed)
 
