@@ -7,16 +7,16 @@ import sys
 from bs4 import BeautifulSoup
 from epub import epub
 
-def main(vol):
+def main(bookname):
 	titles = {
-		'vol1': 'Volume 1',
-		'vol2': 'Volume 2',
-		'vol3': 'Volume 3',
-		'vol4': 'Volume 4',
+		'book1': 'Book 1',
+		'book2': 'Book 2',
+		'book3': 'Book 3',
+		'book4': 'Book 4',
 	}
 	book = epub.EpubBook()
-	book.setTitle('The Gods are Bastards - ' + titles[vol])
-	book.addCreator('D. D. Webb')
+	book.setTitle('Starwalker - ' + titles[bookname])
+	book.addCreator('Melanie Edmonds')
 	book.addTitlePage()
 	book.addTocPage()
 
@@ -31,10 +31,8 @@ def main(vol):
 	</html>
 	'''
 
-	dirname = 'gab_%s_raw/' % vol
+	dirname = 'starwalker_%s_raw/' % bookname
 	files = os.listdir(dirname)
-	if vol == 'vol2':
-		files.remove('16-interruption')
 	files.sort()
 
 	chapter_link_text = ['< Previous Chapter', 'Next Chapter >']
@@ -43,32 +41,16 @@ def main(vol):
 		print 'binding', filename
 		with open(dirname + filename, 'r') as f:
 			soup = BeautifulSoup(f, 'lxml')
-		title = soup.find(class_='entry-title').string
-		content = soup.find(class_='entry-content')
-		content.find(class_='wpcnt').decompose()
-		content.find(id='jp-post-flair').decompose()
-
-		# remove prev/next chapter links and random ad stylesheet
-		p_removed = 0
-		for el in content.children:
-			if el.name == 'style':
-				el.decompose()
-			elif el.name == 'p':
-				has_chapter_links = has_nontext = False
-				for c in el.children:
-					if (c.name == 'a' and c.string in chapter_link_text) or (c.name == 'strong' and \
-							any(cc.name == 'a' and cc.string in chapter_link_text for cc in c.children)):
-						el.decompose()
-						p_removed += 1
-						break
-		if p_removed not in (1, 2):
-			raise Exception('removed %d' % p_removed)
+		title = soup.find(class_='posttitle').find('a').string
+		content = soup.find(class_='entry')
+		content.find(class_='reaction_buttons').decompose()
+		content.find(class_='sharedaddy').decompose()
 
 		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'gab_' + vol
+	output_name = 'starwalker_' + bookname
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
