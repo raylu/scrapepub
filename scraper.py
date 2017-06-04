@@ -8,27 +8,27 @@ import sys
 import requests
 from bs4 import BeautifulSoup
 
-vol = sys.argv[1]
+book = sys.argv[1]
 bounds = {
-	'vol1': (
-		'https://tiraas.wordpress.com/2014/08/20/book-1-prologue/',
-		'https://tiraas.wordpress.com/2015/02/13/epilogue-vol-1/'
+	'book1': (
+		'http://www.starwalkerblog.com/startup-sequence/',
+		'http://www.starwalkerblog.com/sneak-peek-keida/'
 	),
-	'vol2': (
-		'https://tiraas.wordpress.com/2015/02/24/volume-2-prologue/',
-		'https://tiraas.wordpress.com/2015/08/28/epilogue-volume-2/'
+	'book2': (
+		'http://www.starwalkerblog.com/more-than/',
+		'http://www.starwalkerblog.com/authors-note-book-2-complete/'
 	),
-	'vol3': (
-		'https://tiraas.wordpress.com/2015/09/14/prologue-volume-3/',
-		'https://tiraas.wordpress.com/2016/07/15/epilogue-volume-3/'
+	'book3': (
+		'http://www.starwalkerblog.com/the-loyalty-of-pawns/',
+		'http://www.starwalkerblog.com/authors-note-book-3-and-a-hiatus/'
 	),
-	'vol4': (
-		'https://tiraas.wordpress.com/2016/07/29/prologue-volume-4/',
+	'book4': (
+		'http://www.starwalkerblog.com/sarabande-station/',
 		None
 	),
 }
-start, end = bounds[vol]
-dirname = 'gab_%s_raw/' % vol
+start, end = bounds[book]
+dirname = 'starwalker_%s_raw/' % book
 try:
 	os.mkdir(dirname)
 except OSError as e:
@@ -59,6 +59,4 @@ while True:
 			break
 		raise Exception('could not find next')
 	url = next_el['href']
-	if url == 'https://tiraas.wordpress.com/2017/03/24/12-37b/': # skip placeholder chapter
-		url = 'https://tiraas.wordpress.com/2017/03/29/12-38/'
 	i += 1
