@@ -11,12 +11,10 @@ def main(vol):
 	titles = {
 		'vol1': 'Volume 1',
 		'vol2': 'Volume 2',
-		'vol3': 'Volume 3',
-		'vol4': 'Volume 4',
 	}
 	book = epub.EpubBook()
-	book.setTitle('The Gods are Bastards - ' + titles[vol])
-	book.addCreator('D. D. Webb')
+	book.setTitle('The Wandering Inn - ' + titles[vol])
+	book.addCreator('pirateaba')
 	book.addTitlePage()
 	book.addTocPage()
 
@@ -31,13 +29,11 @@ def main(vol):
 	</html>
 	'''
 
-	dirname = 'gab_%s_raw/' % vol
+	dirname = 'inn_%s_raw/' % vol
 	files = os.listdir(dirname)
-	if vol == 'vol2':
-		files.remove('16-interruption')
 	files.sort()
 
-	chapter_link_text = ['< Previous Chapter', 'Next Chapter >']
+	chapter_link_text = ['Previous Chapter', 'Next Chapter']
 
 	for filename in files:
 		print 'binding', filename
@@ -46,7 +42,6 @@ def main(vol):
 		title = soup.find(class_='entry-title').string
 		content = soup.find(class_='entry-content')
 		content.find(class_='wpcnt').decompose()
-		content.find(id='jp-post-flair').decompose()
 
 		# remove prev/next chapter links and random ad stylesheet
 		p_removed = 0
@@ -56,7 +51,7 @@ def main(vol):
 			elif el.name == 'p':
 				has_chapter_links = has_nontext = False
 				for c in el.children:
-					if (c.name == 'a' and c.string in chapter_link_text) or (c.name == 'strong' and \
+					if (c.name == 'a' and c.string in chapter_link_text) or (c.name == 'span' and \
 							any(cc.name == 'a' and cc.string in chapter_link_text for cc in c.children)):
 						el.decompose()
 						p_removed += 1
@@ -68,7 +63,7 @@ def main(vol):
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'gab_' + vol
+	output_name = 'inn_' + vol
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')

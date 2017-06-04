@@ -11,24 +11,16 @@ from bs4 import BeautifulSoup
 vol = sys.argv[1]
 bounds = {
 	'vol1': (
-		'https://tiraas.wordpress.com/2014/08/20/book-1-prologue/',
-		'https://tiraas.wordpress.com/2015/02/13/epilogue-vol-1/'
+		'https://wanderinginn.wordpress.com/2016/07/27/1-00/',
+		'https://wanderinginn.wordpress.com/2017/03/04/1-45/'
 	),
 	'vol2': (
-		'https://tiraas.wordpress.com/2015/02/24/volume-2-prologue/',
-		'https://tiraas.wordpress.com/2015/08/28/epilogue-volume-2/'
-	),
-	'vol3': (
-		'https://tiraas.wordpress.com/2015/09/14/prologue-volume-3/',
-		'https://tiraas.wordpress.com/2016/07/15/epilogue-volume-3/'
-	),
-	'vol4': (
-		'https://tiraas.wordpress.com/2016/07/29/prologue-volume-4/',
+		'https://wanderinginn.wordpress.com/2017/03/07/interlude-2/',
 		None
 	),
 }
 start, end = bounds[vol]
-dirname = 'gab_%s_raw/' % vol
+dirname = 'inn_%s_raw/' % vol
 try:
 	os.mkdir(dirname)
 except OSError as e:
@@ -59,6 +51,4 @@ while True:
 			break
 		raise Exception('could not find next')
 	url = next_el['href']
-	if url == 'https://tiraas.wordpress.com/2017/03/24/12-37b/': # skip placeholder chapter
-		url = 'https://tiraas.wordpress.com/2017/03/29/12-38/'
 	i += 1
