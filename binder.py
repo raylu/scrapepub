@@ -33,6 +33,11 @@ def main(vol):
 	files = os.listdir(dirname)
 	files.sort()
 
+	if vol == 'vol2': # remove password-protected entries
+		files.remove('035-s02-the-antinium-wars-pt-1')
+		files.remove('037-s02-the-antinium-wars-pt-2')
+		files.remove('038-2-00-h')
+
 	chapter_link_text = ['Previous Chapter', 'Next Chapter']
 
 	for filename in files:
