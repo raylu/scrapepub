@@ -18,6 +18,10 @@ bounds = {
 		'https://wanderinginn.wordpress.com/2017/03/07/interlude-2/',
 		'https://wanderinginn.wordpress.com/2017/07/29/2-41/',
 	),
+	'vol3': (
+		'https://wanderinginn.wordpress.com/2017/08/01/3-00-e/',
+		None,
+	),
 }
 start, end = bounds[vol]
 dirname = 'inn_%s_raw/' % vol
