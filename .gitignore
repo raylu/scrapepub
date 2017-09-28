@@ -1,4 +1,4 @@
 *.pyc
-html/
-tomu_vol1.epub
-tomu_vol1/
+*.epub
+/*book*/
+/*vol*/
