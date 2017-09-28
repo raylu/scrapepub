@@ -9,13 +9,11 @@ from epub import epub
 
 def main(vol):
 	titles = {
-		'vol1': 'Volume 1',
-		'vol2': 'Volume 2',
-		'vol3': 'Volume 3',
+		'book1': 'Book 1',
 	}
 	book = epub.EpubBook()
-	book.setTitle('The Wandering Inn - ' + titles[vol])
-	book.addCreator('pirateaba')
+	book.setTitle('Unsong - ' + titles[vol])
+	book.addCreator('Scott Alexander')
 	book.addTitlePage()
 	book.addTocPage()
 
@@ -30,17 +28,9 @@ def main(vol):
 	</html>
 	'''
 
-	dirname = 'inn_%s_raw/' % vol
+	dirname = 'unsong_%s_raw/' % vol
 	files = os.listdir(dirname)
 	files.sort()
-
-	if vol == 'vol2': # remove password-protected entries
-		files.remove('035-s02-the-antinium-wars-pt-1')
-		files.remove('037-s02-the-antinium-wars-pt-2')
-		files.remove('038-2-00-h')
-	elif vol == 'vol3':
-		files.remove('009-s03-wistram-days-pt-2')
-		files.remove('014-3-13')
 
 	chapter_link_text = ['Previous Chapter', 'Next Chapter']
 
@@ -48,31 +38,15 @@ def main(vol):
 		print 'binding', filename
 		with open(dirname + filename, 'r') as f:
 			soup = BeautifulSoup(f, 'lxml')
-		title = soup.find(class_='entry-title').string
-		content = soup.find(class_='entry-content')
-		content.find(class_='wpcnt').decompose()
-
-		# remove prev/next chapter links and random ad stylesheet
-		p_removed = 0
-		for el in content.children:
-			if el.name == 'style':
-				el.decompose()
-			elif el.name == 'p':
-				has_chapter_links = has_nontext = False
-				for c in el.children:
-					if (c.name == 'a' and c.string in chapter_link_text) or (c.name == 'span' and \
-							any(cc.name == 'a' and cc.string in chapter_link_text for cc in c.children)):
-						el.decompose()
-						p_removed += 1
-						break
-		if p_removed not in (1, 2):
-			raise Exception('removed %d' % p_removed)
+		title = soup.find(class_='pjgm-posttitle').string
+		content = soup.find(class_='pjgm-postcontent')
+		content.find(class_='sharedaddy').decompose()
 
 		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'inn_' + vol
+	output_name = 'unsong_' + vol
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')

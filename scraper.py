@@ -10,21 +10,13 @@ from bs4 import BeautifulSoup
 
 vol = sys.argv[1]
 bounds = {
-	'vol1': (
-		'https://wanderinginn.wordpress.com/2016/07/27/1-00/',
-		'https://wanderinginn.wordpress.com/2017/03/04/1-45/'
-	),
-	'vol2': (
-		'https://wanderinginn.wordpress.com/2017/03/07/interlude-2/',
-		'https://wanderinginn.wordpress.com/2017/07/29/2-41/',
-	),
-	'vol3': (
-		'https://wanderinginn.wordpress.com/2017/08/01/3-00-e/',
-		None,
+	'book1': (
+		'http://unsongbook.com/prologue-2/',
+		'http://unsongbook.com/chapter-17-that-the-children-of-jerusalem-may-be-saved-from-slavery/'
 	),
 }
 start, end = bounds[vol]
-dirname = 'inn_%s_raw/' % vol
+dirname = 'unsong_%s_raw/' % vol
 try:
 	os.mkdir(dirname)
 except OSError as e:
@@ -32,6 +24,7 @@ except OSError as e:
 		raise
 
 rs = requests.Session()
+rs.headers.update({'User-Agent': 'Mozilla/5.0'})
 url = start
 i = 0
 while True:
