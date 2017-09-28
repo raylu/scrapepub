@@ -10,6 +10,9 @@ from epub import epub
 def main(vol):
 	titles = {
 		'book1': 'Book 1',
+		'book2': 'Book 2',
+		'book3': 'Book 3',
+		'book4': 'Book 4',
 	}
 	book = epub.EpubBook()
 	book.setTitle('Unsong - ' + titles[vol])

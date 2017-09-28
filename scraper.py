@@ -11,8 +11,20 @@ from bs4 import BeautifulSoup
 vol = sys.argv[1]
 bounds = {
 	'book1': (
-		'http://unsongbook.com/prologue-2/',
-		'http://unsongbook.com/chapter-17-that-the-children-of-jerusalem-may-be-saved-from-slavery/'
+		'https://unsongbook.com/prologue-2/',
+		'https://unsongbook.com/chapter-17-that-the-children-of-jerusalem-may-be-saved-from-slavery/'
+	),
+	'book2': (
+		'https://unsongbook.com/book-2-exodus/',
+		'https://unsongbook.com/chapter-40-in-terrible-majesty/'
+	),
+	'book3': (
+		'https://unsongbook.com/book-iii-revelation/',
+		'https://unsongbook.com/chapter-68-puts-all-heaven-in-a-rage/'
+	),
+	'book4': (
+		'https://unsongbook.com/book-iv-kings/',
+		None
 	),
 }
 start, end = bounds[vol]
