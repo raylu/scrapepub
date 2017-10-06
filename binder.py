@@ -65,6 +65,8 @@ def main(vol):
 						el.decompose()
 						p_removed += 1
 						break
+					elif c.name == 'span' and c.attrs['style'] == 'color:#8ae8ff;':
+						c.attrs['style'] = 'color:#444477;'
 		if p_removed not in (1, 2):
 			raise Exception('removed %d' % p_removed)
 
