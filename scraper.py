@@ -3,28 +3,13 @@
 import errno
 import os
 import os.path
-import sys
 
 import requests
 from bs4 import BeautifulSoup
 
-vol = sys.argv[1]
-bounds = {
-	'vol1': (
-		'https://wanderinginn.wordpress.com/2016/07/27/1-00/',
-		'https://wanderinginn.wordpress.com/2017/03/04/1-45/'
-	),
-	'vol2': (
-		'https://wanderinginn.wordpress.com/2017/03/07/interlude-2/',
-		'https://wanderinginn.wordpress.com/2017/07/29/2-41/',
-	),
-	'vol3': (
-		'https://wanderinginn.wordpress.com/2017/08/01/3-00-e/',
-		None,
-	),
-}
-start, end = bounds[vol]
-dirname = 'inn_%s_raw/' % vol
+start = 'https://parahumans.wordpress.com/category/stories-arcs-1-10/arc-1-gestation/1-01/'
+end = 'https://parahumans.wordpress.com/2015/03/10/moving-on/'
+dirname = 'worm_raw/'
 try:
 	os.mkdir(dirname)
 except OSError as e:
@@ -50,6 +35,10 @@ while True:
 		break
 	soup = BeautifulSoup(content, 'lxml')
 	next_el = soup.find('link', rel='next')
+	if next_el is None:
+		next_el = soup.find('a', string='Next Chapter')
+	if next_el is None:
+		next_el = soup.find('a', string=' Next Chapter')
 	if next_el is None:
 		if end is None:
 			break
