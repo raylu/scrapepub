@@ -50,6 +50,10 @@ def main():
 		if p_removed != 2 and filename != '304-moving-on':
 			raise Exception('removed %d' % p_removed)
 
+		# remove facebook/twitter share links
+		if filename != '000-1-01':
+			content.find('div', id='jp-post-flair').decompose()
+
 		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
