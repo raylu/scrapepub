@@ -20,7 +20,7 @@ bounds = {
 	),
 	'vol3': (
 		'https://wanderinginn.wordpress.com/2017/08/01/3-00-e/',
-		None,
+		'https://wanderinginn.wordpress.com/2017/12/30/interlude-4/',
 	),
 }
 start, end = bounds[vol]
