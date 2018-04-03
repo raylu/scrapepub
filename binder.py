@@ -13,6 +13,8 @@ def main(vol):
 		'vol2': 'Volume 2',
 		'vol3': 'Volume 3',
 		'vol4': 'Volume 4',
+		'vol5': 'Volume 5',
+		'bonus': 'Bonus Chapters',
 	}
 	book = epub.EpubBook()
 	book.setTitle('The Gods are Bastards - ' + titles[vol])
@@ -61,7 +63,7 @@ def main(vol):
 						el.decompose()
 						p_removed += 1
 						break
-		if p_removed not in (1, 2):
+		if p_removed not in (1, 2) and filename != '165-site-announcement':
 			raise Exception('removed %d' % p_removed)
 
 		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
