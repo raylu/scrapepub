@@ -8,7 +8,7 @@ from epub import epub
 
 def main():
 	book = epub.EpubBook()
-	book.setTitle('Worm')
+	book.setTitle('Ward (Worm 2)')
 	book.addCreator('Wildbow - John C. McCrae')
 	book.addTitlePage()
 	book.addTocPage()
@@ -24,11 +24,11 @@ def main():
 	</html>
 	'''
 
-	dirname = 'worm_raw/'
+	dirname = 'worm2_raw/'
 	files = os.listdir(dirname)
 	files.sort()
 
-	chapter_link_text = ['Last Chapter', 'Next Chapter', ' Next Chapter']
+	chapter_link_text = ['Last Chapter', 'Previous Chapter', 'Next Chapter']
 
 	for filename in files:
 		print 'binding', filename
@@ -39,26 +39,34 @@ def main():
 
 		# remove prev/next chapter links
 		p_removed = 0
-		for el in content.children:
-			if el.name == 'p':
-				has_chapter_links = has_nontext = False
-				for c in el.children:
-					if c.name == 'a' and c.string in chapter_link_text:
-						el.decompose()
+		for p in content.children:
+			if p.name != 'p':
+				continue
+			for strong in p.children:
+				if strong.name != 'strong':
+					continue
+				found_p = False
+				for el in strong.children:
+					if el.name == 'a' and el.string in chapter_link_text:
+						p.decompose()
 						p_removed += 1
+						found_p = True
 						break
-		if p_removed != 2 and filename != '304-moving-on':
-			raise Exception('removed %d' % p_removed)
+				if found_p:
+					break
+		assert p_removed == 2, 'found %d chapter links' % p_removed
 
 		# remove facebook/twitter share links
-		if filename != '000-1-01':
-			content.find('div', id='jp-post-flair').decompose()
+		share_divs = content.find_all("div", class_='sharedaddy')
+		assert len(share_divs) == 2, 'found %d share divs' % len(share_divs)
+		for div in share_divs:
+			div.decompose()
 
 		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'worm'
+	output_name = 'worm2'
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')

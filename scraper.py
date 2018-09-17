@@ -7,9 +7,9 @@ import os.path
 import requests
 from bs4 import BeautifulSoup
 
-start = 'https://parahumans.wordpress.com/category/stories-arcs-1-10/arc-1-gestation/1-01/'
-end = 'https://parahumans.wordpress.com/2015/03/10/moving-on/'
-dirname = 'worm_raw/'
+start = 'https://www.parahumans.net/2017/10/21/glow-worm-0-1/'
+end = None
+dirname = 'worm2_raw/'
 try:
 	os.mkdir(dirname)
 except OSError as e:
