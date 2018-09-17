@@ -37,6 +37,8 @@ def main(vol):
 	files = os.listdir(dirname)
 	if vol == 'vol2':
 		files.remove('16-interruption')
+	elif vol == 'vol5':
+		files.remove('025-pausing-to-move')
 	files.sort()
 
 	chapter_link_text = ['< Previous Chapter', 'Next Chapter >']
