@@ -39,9 +39,9 @@ def main(vol):
 		files.remove('16-interruption')
 	elif vol == 'vol5':
 		files.remove('025-pausing-to-move')
+		files.remove('057-bonus-49-continued')
 	files.sort()
 
-	chapter_link_text = ['< Previous Chapter', 'Next Chapter >']
 
 	for filename in files:
 		print 'binding', filename
@@ -49,22 +49,19 @@ def main(vol):
 			soup = BeautifulSoup(f, 'lxml')
 		title = soup.find(class_='entry-title').string
 		content = soup.find(class_='entry-content')
-		content.find(class_='wpcnt').decompose()
 		content.find(id='jp-post-flair').decompose()
+		wpcnt = content.find(class_='wpcnt')
+		if wpcnt is not None:
+			wpcnt.decompose()
 
 		# remove prev/next chapter links and random ad stylesheet
 		p_removed = 0
 		for el in content.children:
 			if el.name == 'style':
 				el.decompose()
-			elif el.name == 'p':
-				has_chapter_links = has_nontext = False
-				for c in el.children:
-					if (c.name == 'a' and c.string in chapter_link_text) or (c.name == 'strong' and \
-							any(cc.name == 'a' and cc.string in chapter_link_text for cc in c.children)):
-						el.decompose()
-						p_removed += 1
-						break
+			elif is_ch_nav(el):
+				el.decompose()
+				p_removed += 1
 		if p_removed not in (1, 2) and filename != '165-site-announcement':
 			raise Exception('removed %d' % p_removed)
 
@@ -76,6 +73,25 @@ def main(vol):
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
+
+chapter_link_text = ['< Previous Chapter', 'Next Chapter >']
+
+def is_ch_nav(el):
+	if el.name != 'p':
+		return False
+
+	for c in el.children:
+		if c.name == 'a':
+			if c.string in chapter_link_text:
+				return True
+			for cc in c.children:
+				if cc.name == 'strong' and cc.string in chapter_link_text:
+					return True
+		if c.name == 'strong':
+			for cc in c.children:
+				if cc.name == 'a' and cc.string in chapter_link_text:
+					return True
+	return False
 
 if __name__ == '__main__':
 	main(*sys.argv[1:])
