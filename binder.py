@@ -12,6 +12,7 @@ def main(bookname):
 		'book1': 'Book I',
 		'book2': 'Book 2',
 		'book3': 'Book 3',
+		'book4': 'Book 4',
 	}
 	book = epub.EpubBook()
 	book.setTitle('A Practical Guide to Evil - ' + titles[bookname])
