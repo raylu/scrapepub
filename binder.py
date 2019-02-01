@@ -12,6 +12,8 @@ def main(vol):
 		'vol1': 'Volume 1',
 		'vol2': 'Volume 2',
 		'vol3': 'Volume 3',
+		'vol4': 'Volume 4',
+		'vol5': 'Volume 5',
 	}
 	book = epub.EpubBook()
 	book.setTitle('The Wandering Inn - ' + titles[vol])
@@ -42,7 +44,9 @@ def main(vol):
 			soup = BeautifulSoup(f, 'lxml')
 		title = soup.find(class_='entry-title').string
 		content = soup.find(class_='entry-content')
-		content.find(class_='wpcnt').decompose()
+
+		if vol < 'vol4':
+			content.find(class_='wpcnt').decompose()
 
 		# remove prev/next chapter links and random ad stylesheet
 		p_removed = 0
