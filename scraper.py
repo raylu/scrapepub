@@ -24,6 +24,10 @@ bounds = {
 	),
 	'book4': (
 		'https://practicalguidetoevil.wordpress.com/2018/04/09/prologue-4/',
+		'https://practicalguidetoevil.wordpress.com/2019/01/14/prologue-5/',
+	),
+	'book5': (
+		'https://practicalguidetoevil.wordpress.com/2019/01/14/prologue-5/',
 		None
 	),
 }

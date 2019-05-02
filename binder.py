@@ -13,6 +13,7 @@ def main(bookname):
 		'book2': 'Book 2',
 		'book3': 'Book 3',
 		'book4': 'Book 4',
+		'book5': 'Book 5',
 	}
 	book = epub.EpubBook()
 	book.setTitle('A Practical Guide to Evil - ' + titles[bookname])
@@ -41,7 +42,6 @@ def main(bookname):
 			soup = BeautifulSoup(f, 'lxml')
 		title = soup.find(class_='entry-title').string
 		content = soup.find(class_='entry-content')
-		content.find(class_='wpcnt').decompose()
 		content.find(id='jp-post-flair').decompose()
 
 		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
