@@ -27,8 +27,8 @@ bounds = {
 		'https://wanderinginn.com/2018/07/09/the-depthless-doctor/',
 	),
 	'vol5': (
-		'https://wanderinginn.com/2018/10/19/glossary',
-		None,
+		'https://wanderinginn.com/2018/10/19/glossary/',
+		'https://wanderinginn.com/2019/03/02/interlude-5/',
 	),
 }
 start, end = bounds[vol]
@@ -56,11 +56,16 @@ while True:
 			f.write(content)
 	if url == end:
 		break
-	soup = BeautifulSoup(content, 'lxml')
-	next_el = soup.find('link', rel='next')
-	if next_el is None:
-		if end is None:
-			break
-		raise Exception('could not find next')
-	url = next_el['href']
+	elif url == 'https://wanderinginn.com/2018/10/19/glossary/':
+		url = 'https://wanderinginn.com/2018/07/10/5-00/'
+	elif url == 'https://wanderinginn.com/2018/10/16/5-29/':
+		url = 'https://wanderinginn.com/2018/10/20/5-30-g/'
+	else:
+		soup = BeautifulSoup(content, 'lxml')
+		next_el = soup.find('link', rel='next')
+		if next_el is None:
+			if end is None:
+				break
+			raise Exception('could not find next')
+		url = next_el['href']
 	i += 1
