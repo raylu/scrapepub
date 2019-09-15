@@ -2,16 +2,23 @@
 
 import os
 import shutil
+import sys
 
 from bs4 import BeautifulSoup
 from epub import epub
 
 def main():
-	book = epub.EpubBook()
-	book.setTitle('Ward (Worm 2)')
-	book.addCreator('Wildbow - John C. McCrae')
-	book.addTitlePage()
-	book.addTocPage()
+	titles = {
+		'arc01-12': 'Arcs 1-12',
+		'arc13-': 'Arcs 13+',
+	}
+	book = sys.argv[1]
+
+	epubbook = epub.EpubBook()
+	epubbook.setTitle('Ward (Worm 2) ' + titles[book])
+	epubbook.addCreator('Wildbow - John C. McCrae')
+	epubbook.addTitlePage()
+	epubbook.addTocPage()
 
 	template = '''
 	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -24,7 +31,7 @@ def main():
 	</html>
 	'''
 
-	dirname = 'worm2_raw/'
+	dirname = 'worm2_%s_raw/' % book
 	files = os.listdir(dirname)
 	files.sort()
 
@@ -62,13 +69,13 @@ def main():
 		for div in share_divs:
 			div.decompose()
 
-		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
-		book.addSpineItem(n)
-		book.addTocMapNode(n.destPath, title)
+		n = epubbook.addHtml('', '%s.html' % filename, template % (title, title, content))
+		epubbook.addSpineItem(n)
+		epubbook.addTocMapNode(n.destPath, title)
 
-	output_name = 'worm2'
+	output_name = 'worm2_' + book
 	shutil.rmtree(output_name, ignore_errors=True)
-	book.createBook(output_name)
+	epubbook.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
 
 if __name__ == '__main__':
