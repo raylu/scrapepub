@@ -44,7 +44,7 @@ url = start
 i = 0
 while url != end:
 	name = url.rsplit('/', 2)[1]
-	filename = '%02d-%s' % (i, name)
+	filename = '%03d-%s' % (i, name)
 	if os.path.exists(dirname + filename):
 		print 'already have', filename
 		with open(dirname + filename, 'r') as f:
