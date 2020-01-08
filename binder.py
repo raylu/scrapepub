@@ -60,6 +60,10 @@ def process_chapter(vol, content):
 	if vol < 'vol4':
 		content.find(class_='wpcnt').decompose()
 
+	pew = content.find('div', id='paste-embed-wrapper')
+	if pew is not None:
+		pew.unwrap()
+
 	# remove prev/next chapter links and random ad stylesheet
 	p_removed = 0
 	for el in content.children:
@@ -78,9 +82,6 @@ def process_chapter(vol, content):
 					break
 				elif c.name == 'span' and c.attrs['style'] == 'color:#8ae8ff;':
 					c.attrs['style'] = 'color:#444477;'
-		elif el.name == 'div' and el.attrs['id'] == 'paste-embed-wrapper':
-			el.decompose()
-			p_removed += 1
 	if p_removed not in (1, 2):
 		raise Exception('removed %d' % p_removed)
 	return True
