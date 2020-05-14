@@ -62,7 +62,7 @@ def main(vol):
 			elif is_ch_nav(el):
 				el.decompose()
 				p_removed += 1
-		if p_removed not in (1, 2) and filename != '165-site-announcement':
+		if p_removed not in (1, 2) and filename not in ['165-site-announcement', '177-16-32']:
 			raise Exception('removed %d' % p_removed)
 
 		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
