@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import os
 import shutil
@@ -7,18 +7,14 @@ import sys
 from bs4 import BeautifulSoup
 from epub import epub
 
-def main(vol):
+def main(year):
 	titles = {
-		'vol1': 'Volume 1',
-		'vol2': 'Volume 2',
-		'vol3': 'Volume 3',
-		'vol4': 'Volume 4',
-		'vol5': 'Volume 5',
-		'bonus': 'Bonus Chapters',
+		'year1': 'Year 1',
+		'year2': 'Year 2',
 	}
 	book = epub.EpubBook()
-	book.setTitle('The Gods are Bastards - ' + titles[vol])
-	book.addCreator('D. D. Webb')
+	book.setTitle('Heretical Edge - ' + titles[year])
+	book.addCreator('Cerulean')
 	book.addTitlePage()
 	book.addTocPage()
 
@@ -33,15 +29,11 @@ def main(vol):
 	</html>
 	'''
 
-	dirname = 'gab_%s_raw/' % vol
+	dirname = 'hedge_%s_raw/' % year
 	files = os.listdir(dirname)
-	if vol == 'vol2':
-		files.remove('16-interruption')
-	elif vol == 'vol5':
-		files.remove('025-pausing-to-move')
-		files.remove('057-bonus-49-continued')
+	if year == 'year1':
+		files.remove('024-christmas')
 	files.sort()
-
 
 	for filename in files:
 		print 'binding', filename
@@ -54,39 +46,34 @@ def main(vol):
 		if wpcnt is not None:
 			wpcnt.decompose()
 
-		# remove prev/next chapter links and random ad stylesheet
+		# remove prev/next chapter links
 		p_removed = 0
 		for el in content.children:
-			if el.name == 'style':
-				el.decompose()
-			elif is_ch_nav(el):
+			if is_ch_nav(el):
 				el.decompose()
 				p_removed += 1
-		if p_removed not in (1, 2) and filename not in ['165-site-announcement', '177-16-32']:
+		if p_removed != 2 and filename not in ['040-a-few-quick-notes',
+				'177-quick-clarificationexplanation', '306-mini-interlude-51-pace']:
 			raise Exception('removed %d' % p_removed)
 
 		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'gab_' + vol
+	output_name = 'hedge_' + year
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
 
-chapter_link_text = ['< Previous Chapter', 'Next Chapter >']
+chapter_link_text = ['Previous Chapter', 'Next Chapter']
 
 def is_ch_nav(el):
 	if el.name != 'p':
 		return False
 
 	for c in el.children:
-		if c.name == 'a':
-			if c.string in chapter_link_text:
-				return True
-			for cc in c.children:
-				if cc.name == 'strong' and cc.string in chapter_link_text:
-					return True
+		if c.name == 'a' and c.string in chapter_link_text:
+			return True
 		if c.name == 'strong':
 			for cc in c.children:
 				if cc.name == 'a' and cc.string in chapter_link_text:
