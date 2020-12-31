@@ -32,7 +32,11 @@ bounds = {
 	),
 	'vol6': (
 		'https://wanderinginn.com/2019/03/19/6-00/',
-		None,
+		'https://wanderinginn.com/2020/01/01/6-68/',
+	),
+	'vol7': (
+		'https://wanderinginn.com/2020/01/19/7-00/',
+		'https://wanderinginn.com/2020/12/23/solstice-pt-3/',
 	),
 }
 start, end = bounds[vol]
@@ -68,8 +72,10 @@ while True:
 		soup = BeautifulSoup(content, 'lxml')
 		next_el = soup.find('link', rel='next')
 		if next_el is None:
-			if end is None:
-				break
-			raise Exception('could not find next')
+			next_el = soup.find('a', rel='next')
+			if next_el is None:
+				if end is None:
+					break
+				raise Exception('could not find next')
 		url = next_el['href']
 	i += 1
