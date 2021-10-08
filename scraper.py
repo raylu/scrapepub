@@ -48,6 +48,7 @@ except OSError as e:
 		raise
 
 rs = requests.Session()
+rs.headers['User-Agent'] = 'Mozilla/5.0'
 url = start
 i = 0
 while url != end:
@@ -63,7 +64,7 @@ while url != end:
 		with open(dirname + filename, 'w') as f:
 			f.write(content)
 	soup = BeautifulSoup(content, 'lxml')
-	next_el = soup.find('link', rel='next')
+	next_el = soup.find('a', rel='next')
 	if next_el is None:
 		url = None
 	else:
