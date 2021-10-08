@@ -28,7 +28,15 @@ bounds = {
 	),
 	'book5': (
 		'https://practicalguidetoevil.wordpress.com/2019/01/14/prologue-5/',
-		None
+		'https://practicalguidetoevil.wordpress.com/2020/01/06/prologue-6/',
+	),
+	'book6': (
+		'https://practicalguidetoevil.wordpress.com/2020/01/06/prologue-6/',
+		'https://practicalguidetoevil.wordpress.com/2021/03/02/prologue-7/',
+	),
+	'book7': (
+		'https://practicalguidetoevil.wordpress.com/2021/03/02/prologue-7/',
+		None,
 	),
 }
 start, end = bounds[book]
