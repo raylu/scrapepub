@@ -7,14 +7,13 @@ import sys
 from bs4 import BeautifulSoup
 from epub import epub
 
-def main(year):
+def main(act):
 	titles = {
-		'year1': 'Year 1',
-		'year2': 'Year 2',
+		'act1': 'Act 1',
 	}
 	book = epub.EpubBook()
-	book.setTitle('Heretical Edge - ' + titles[year])
-	book.addCreator('Cerulean')
+	book.setTitle('Katalepsis - ' + titles[act])
+	book.addCreator('HY')
 	book.addTitlePage()
 	book.addTocPage()
 
@@ -29,10 +28,8 @@ def main(year):
 	</html>
 	'''
 
-	dirname = 'hedge_%s_raw/' % year
+	dirname = 'katalepsis_%s_raw/' % act
 	files = os.listdir(dirname)
-	if year == 'year1':
-		files.remove('024-christmas')
 	files.sort()
 
 	for filename in files:
@@ -41,10 +38,6 @@ def main(year):
 			soup = BeautifulSoup(f, 'lxml')
 		title = soup.find(class_='entry-title').string
 		content = soup.find(class_='entry-content')
-		content.find(id='jp-post-flair').decompose()
-		wpcnt = content.find(class_='wpcnt')
-		if wpcnt is not None:
-			wpcnt.decompose()
 
 		# remove prev/next chapter links
 		p_removed = 0
@@ -52,16 +45,14 @@ def main(year):
 			if is_ch_nav(el):
 				el.decompose()
 				p_removed += 1
-		if p_removed != 2 and filename not in ['040-a-few-quick-notes',
-				'177-quick-clarificationexplanation', '306-mini-interlude-51-pace',
-				'000-fusion-1-01-heretical-edge-2']:
+		if p_removed != 2:
 			raise Exception('removed %d' % p_removed)
 
 		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
-	output_name = 'hedge_' + year
+	output_name = 'katalepsis_' + act
 	shutil.rmtree(output_name, ignore_errors=True)
 	book.createBook(output_name)
 	epub.EpubBook.createArchive(output_name, output_name + '.epub')
