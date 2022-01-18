@@ -9,20 +9,16 @@ import requests
 from bs4 import BeautifulSoup
 
 bounds = {
-	'year1': (
-		'https://ceruleanscrawling.wordpress.com/2015/10/03/orientation-1-01/',
-		'https://ceruleanscrawling.wordpress.com/2019/09/22/mini-interlude-82-avalons-explanation-heretical-edge/'
-	),
-	'year2': (
-		'https://ceruleanscrawling.wordpress.com/2019/09/23/fusion-1-01-heretical-edge-2/',
+	'act1': (
+		'https://katalepsis.net/2019/02/02/mind-correlating-1-1/',
 		None
 	),
 }
 
 def main():
-	year = sys.argv[1]
-	start, end = bounds[year]
-	dirname = get_dir(year)
+	act = sys.argv[1]
+	start, end = bounds[act]
+	dirname = get_dir(act)
 
 	url = start
 	i = 0
@@ -31,7 +27,7 @@ def main():
 		if url == end:
 			break
 		soup = BeautifulSoup(content, 'lxml')
-		next_el = soup.find('link', rel='next')
+		next_el = soup.find('a', rel='next')
 		if next_el is None:
 			if end is None:
 				break
@@ -39,8 +35,8 @@ def main():
 		url = next_el['href']
 		i += 1
 
-def get_dir(year):
-	dirname = 'hedge_%s_raw/' % year
+def get_dir(act):
+	dirname = 'katalepsis_%s_raw/' % act
 	try:
 		os.mkdir(dirname)
 	except OSError as e:
@@ -49,6 +45,7 @@ def get_dir(year):
 	return dirname
 
 rs = requests.Session()
+rs.headers['User-Agent'] = 'Mozilla/5.0'
 
 def get_url(dirname, i, url):
 	name = url.rsplit('/', 2)[1]
