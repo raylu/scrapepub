@@ -1,8 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import os
 import shutil
 import sys
+import xml.sax.saxutils
 
 from bs4 import BeautifulSoup
 from epub import epub
@@ -43,10 +44,11 @@ def main(bookname):
 		with open(dirname + filename, 'r') as f:
 			soup = BeautifulSoup(f, 'lxml')
 		title = soup.find(class_='entry-title').string
+		title_escaped = xml.sax.saxutils.escape(title)
 		content = soup.find(class_='entry-content')
 		content.find(id='jp-post-flair').decompose()
 
-		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
+		n = book.addHtml('', '%s.html' % filename, template % (title_escaped, title_escaped, content))
 		book.addSpineItem(n)
 		book.addTocMapNode(n.destPath, title)
 
