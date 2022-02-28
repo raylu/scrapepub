@@ -4,6 +4,7 @@ import errno
 import os
 import os.path
 import sys
+import time
 
 import requests
 from bs4 import BeautifulSoup
@@ -60,9 +61,12 @@ while url != end:
 			content = f.read()
 	else:
 		print 'getting', filename
-		content = rs.get(url).content
+		r = rs.get(url)
+		r.raise_for_status()
+		content = r.content
 		with open(dirname + filename, 'w') as f:
 			f.write(content)
+		time.sleep(1.5)
 	soup = BeautifulSoup(content, 'lxml')
 	next_el = soup.find('a', rel='next')
 	if next_el is None:
