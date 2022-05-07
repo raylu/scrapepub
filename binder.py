@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import os
 import shutil
@@ -46,7 +46,7 @@ def main(vol):
 		title = soup.find(class_='entry-title').string
 		content = soup.find(class_='entry-content')
 
-		if process_chapter(vol, content):
+		if process_chapter(vol, filename, content):
 			n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
 			book.addSpineItem(n)
 			book.addTocMapNode(n.destPath, title)
@@ -58,7 +58,15 @@ def main(vol):
 
 chapter_link_text = ['Previous Chapter', 'Next Chapter']
 
-def process_chapter(vol, content):
+ignore_chs = [
+	'089-solstice-pt-4',
+	'090-solstice-pt-5',
+	'091-solstice-pt-6',
+	'092-solstice-pt-7',
+	'093-solstice-pt-8',
+	'094-solstice-pt-9',
+]
+def process_chapter(vol, filename, content):
 	if vol < 'vol4':
 		content.find(class_='wpcnt').decompose()
 
@@ -84,7 +92,7 @@ def process_chapter(vol, content):
 					break
 				elif c.name == 'span' and c.attrs['style'] == 'color:#8ae8ff;':
 					c.attrs['style'] = 'color:#444477;'
-	if p_removed not in (1, 2):
+	if p_removed not in (1, 2) and filename not in ignore_chs:
 		raise Exception('removed %d' % p_removed)
 	return True
 
