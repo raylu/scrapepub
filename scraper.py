@@ -36,7 +36,11 @@ bounds = {
 	),
 	'vol7': (
 		'https://wanderinginn.com/2020/01/19/7-00/',
-		'https://wanderinginn.com/2020/12/23/solstice-pt-3/',
+		'https://wanderinginn.com/2020/12/23/solstice-pt-9/',
+	),
+	'vol8': (
+		'https://wanderinginn.com/2021/01/10/8-00/',
+		'https://wanderinginn.com/2022/05/03/epilogue/',
 	),
 }
 start, end = bounds[vol]
