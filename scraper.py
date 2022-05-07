@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 
 import errno
 import os
@@ -52,6 +52,7 @@ except OSError as e:
 		raise
 
 rs = requests.Session()
+rs.headers['User-Agent'] = 'Mozilla/5.0'
 url = start
 i = 0
 while True:
