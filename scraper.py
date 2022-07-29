@@ -73,6 +73,10 @@ while True:
 		url = 'https://wanderinginn.com/2018/07/10/5-00/'
 	elif url == 'https://wanderinginn.com/2018/10/16/5-29/':
 		url = 'https://wanderinginn.com/2018/10/20/5-30-g/'
+	elif url == 'https://wanderinginn.com/2022/02/16/interlude-hectval-pt-3/':
+		url = 'https://wanderinginn.com/interlude-satar-revised/'
+	elif url == 'https://wanderinginn.com/interlude-satar-revised/':
+		url = 'https://wanderinginn.com/2022/02/23/8-66/'
 	else:
 		soup = BeautifulSoup(content, 'lxml')
 		next_el = soup.find('link', rel='next')
