@@ -45,7 +45,7 @@ def main(act):
 			if is_ch_nav(el):
 				el.decompose()
 				p_removed += 1
-		if p_removed != 2:
+		if p_removed != 2 and filename < '188-':
 			raise Exception('removed %d' % p_removed)
 
 		n = book.addHtml('', '%s.html' % filename, template % (title, title, content))
