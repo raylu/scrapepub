@@ -42,6 +42,10 @@ bounds = {
 		'https://wanderinginn.com/2021/01/10/8-00/',
 		'https://wanderinginn.com/2022/05/03/epilogue/',
 	),
+	'vol9': (
+		'https://wanderinginn.com/2022/06/03/9-00/',
+		None,
+	),
 }
 start, end = bounds[vol]
 dirname = 'inn_%s_raw/' % vol

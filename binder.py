@@ -17,6 +17,7 @@ def main(vol):
 		'vol6': 'Volume 6',
 		'vol7': 'Volume 7',
 		'vol8': 'Volume 8',
+		'vol9': 'Volume 9',
 	}
 	book = epub.EpubBook()
 	book.setTitle('The Wandering Inn - ' + titles[vol])
